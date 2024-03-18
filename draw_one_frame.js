@@ -1,185 +1,159 @@
-function draw_one_frame(cur_frac) {
-	//setup-----------------------
-	//540/2=270
-	//960/2=480
-	angleMode(DEGREES);
-	let halfX = width/2;
-	let halfY = height/2;
-	background(144, 224, 239);
-	strokeWeight(60);
-	//==============================================
-	let shadow=map(cur_frac,0,1,halfX/2,halfX*1.4);
-	let shadow1=map(cur_frac,0,1,halfX*1.4,halfX*2.5);
-	let ShadEnd1=map(cur_frac,0,1,halfX*2.5,halfX*4);
-	let ripple=map(cur_frac,0,1,0,halfX);
-	let ripple2=map(cur_frac,0,1,halfX,width);
-	let ripple3=map(cur_frac,0,1,width,width*1.75);
-	let IW=map(cur_frac,0,1,halfY/500,halfY/80);
-	let MW=map(cur_frac,0,1,halfY/80,halfY/30);
-	let BW=map(cur_frac,0,1,halfY/30,halfY/10);
+let img;
 
-	//StrokeSize......................
-	let strip1=map(cur_frac,0,1,halfY/500,halfY/20);
-	let strip2=map(cur_frac,0,1,halfY/20,halfY/10);
-	let strip3=map(cur_frac,0,1,halfY/10,halfY/5);
+let rectangleWidth = 150; // 长方形宽度
+let rectangleHeight = 20; // 长方形高度
+let gap = 100; // 间隔
+let numRectangles = 5; // 长方形数量
 
-	//Colours.........................
+let totalWidth = (rectangleWidth + gap) * numRectangles - gap; // 计算总宽度
+let startX; // 长方形的起始x坐标
+let startY; // 长方形的起始y坐标
 
-	let depthM1 = map(cur_frac,0,1,255,100);
-	let depthM2 = map(cur_frac,0,1,100,50);//make a new set fo things for the things w transparency for the top of the ripple idk its recorded.
-	let depthM3 = map(cur_frac,0,1,50,0);
+let speed = 2; // 移动速度
+let xPositions = []; // 保存长方形的x坐标
 
-	let backShadow1=color(126, 207, 222,depthM1);//darkest
-	let backShadow2=color(126,207,222,depthM2);
-	let backShadow3=color(126,207,222,depthM3);
-	let frontShadow1=color(135, 217, 232,depthM1);//lighter
-	let frontShadow2=color(135, 217, 232,depthM2);//lighter
-	let frontShadow3=color(135, 217, 232,depthM3);//lighter
+let customImgs = [];
 
-	let highL3=color(158, 231, 247);
-	let highL2=color(194,242,252);
-	let highL1=color(222, 245, 250);//lightest
-	let rainColor=color(186, 235, 245);
+let statX =70
 
 
-	//=============================================
-//	RIPPLE__________________________________________________________________
-	let smaller = height/ 10
-	let smallerRipple = ripple-smaller;
-		if(ripple-smaller < 0){
-			smallerRipple = 0;
-		}
-		let medSrip = ripple2-smaller;
-		if(ripple2-smaller<0){
-			medSrip = 0;
-		}
-		let bigSrip = ripple3-smaller;
-		if(bigSrip-smaller<0){
-			bigSrip=0;
-		}
-		
-		noFill();
+function preload() {
+    img = loadImage("./star.png");
 
-//SHADOWS AND DEPTH.......................................
+    // 初始化长方形的x坐标
+    startX = (960 - totalWidth) / 2;
+    startY = 150;
 
-	strokeWeight(strip1*3);//inside
-	stroke(frontShadow1);
-	arc(halfX,halfY,shadow,shadow/2.2,190,360);
+    for (let i = 0; i < numRectangles; i++) {
+        xPositions.push(startX + i * (rectangleWidth + gap));
+    }
 
-	strokeWeight(strip1*2);//insdie
-	stroke(backShadow1);
-	arc(halfX,halfY,shadow,shadow/2.2,200,350);
-	
-	strokeWeight(strip3*1.5);//middle
-	stroke(frontShadow2);
-	arc(halfX,halfY,shadow1,shadow1/2.2,190,360);
+    for (let i = 0; i <5 ; i++) {
+        customImgs.push(new CustomImage(statX, 50, 50, 50, true, false)); // 静止图片
+        statX+=200;
+    }
+    statX=70;
+    for (let i = 0; i <5 ; i++) {
+        customImgs.push(new CustomImage(statX, 480, 50, 50, true, false)); // 静止图片
+        statX+=200;
+    }
 
-	strokeWeight(strip2*2);//middle
-	stroke(backShadow2);
-	arc(halfX,halfY,shadow1,shadow1/2.2,200,350);
-
-	strokeWeight(strip3*3);//outer
-	stroke(frontShadow3);
-	arc(halfX,halfY,ShadEnd1,ShadEnd1/2.2,180,360);
-	
-	strokeWeight(strip3*2);//outer
-	stroke(backShadow3);
-	arc(halfX,halfY,ShadEnd1,ShadEnd1/2.2,190,350);
-	
-
-	//underneaf
-	strokeWeight(strip1*2);
-	stroke(frontShadow1);
-	arc(halfX,halfY+halfY/15,smallerRipple,smallerRipple/2.2,30,170);
-	strokeWeight(strip1*1.5);
-	stroke(backShadow1);
-	arc(halfX,halfY+halfY/15,smallerRipple,smallerRipple/2.2,40,160);
-
-	strokeWeight(strip2*2);//middle
-	stroke(frontShadow2);
-	arc(halfX,halfY+halfY/15,medSrip,medSrip/2.2,30,170);
-	strokeWeight(strip2*1.5);//middle
-	stroke(backShadow2);
-	arc(halfX,halfY+halfY/15,medSrip,medSrip/2.2,40,160);
-
-	strokeWeight(strip3*2);//outer
-	stroke(frontShadow3);
-	arc(halfX,halfY+halfY/15,bigSrip,bigSrip/2.2,30,170);
-	strokeWeight(strip3*1.5);//outer
-	stroke(backShadow3);
-	arc(halfX,halfY+halfY/15,bigSrip,bigSrip/2.2,40,160);
-
-	
-//HIGHLIGHTED.......................................
-	//outside.............
-	strokeWeight(strip3*2);
-	stroke(highL3);
-	ellipse(halfX,halfY,bigSrip,bigSrip/2.2);//backlight
-
-	strokeWeight(strip3);
-	stroke(highL2);
-	arc(halfX,halfY,bigSrip,bigSrip/2.2,350,180);
-
-	strokeWeight(strip3/2);//highlight
-	stroke(highL1);
-	arc(halfX,halfY,bigSrip,bigSrip/2.2,10,170);
-
-	strokeWeight(BW);
-	stroke(255);
-	arc(halfX,halfY,bigSrip,bigSrip/2.2,40,160);//whitelight
-	
-	//middle...........
-	strokeWeight(strip2*2);
-	stroke(highL3);
-	ellipse(halfX,halfY,medSrip,medSrip/2.2);//backlight
-
-	strokeWeight(strip2);
-	stroke(highL2);
-	arc(halfX,halfY,medSrip,medSrip/2.2,350,180);
-
-	strokeWeight(strip2/2);
-	stroke(highL1);
-	arc(halfX,halfY,medSrip,medSrip/2.2,10,170);//highlight
-
-	strokeWeight(MW);
-	stroke(255);
-	arc(halfX,halfY,medSrip,medSrip/2.2,40,160);//whitelight
-	// stroke(0,255,0);
-	// arc(halfX,halfY,medSrip,medSrip/2.2,10,20);//whitelight
+    statX=70;
+    for (let i = 0; i <5 ; i++) {
+        customImgs.push(new CustomImage(statX, 260, 50, 50, false, true)); // 静止图片
+        statX+=200;
+    }
 
 
-	//inside.........
-	strokeWeight(strip1*2);
-	stroke(highL3);
-	ellipse(halfX,halfY,smallerRipple,smallerRipple/2.2);//backlight
-
-	strokeWeight(strip1);
-	stroke(highL2);
-	arc(halfX,halfY,smallerRipple,smallerRipple/2.2,350,180);
-
-	strokeWeight(strip1/2);
-	stroke(highL1);
-	arc(halfX,halfY,smallerRipple,smallerRipple/2.2,10,170);//highlight
-
-	strokeWeight(IW);
-	stroke(255);
-	arc(halfX,halfY,smallerRipple,smallerRipple/2.2,40,160);//whitelight
-
-//WATERDROP____________________________________________
-	let tbvr =map(cur_frac,0,1,height-height*2,halfY*1.1);
-	
-	let rainSize=map(cur_frac,0,1,halfX/10,halfX/150);
-
-	strokeWeight(4);
-	stroke(rainColor);
-	fill(222, 245, 250);
-	ellipse(halfX,tbvr,rainSize,rainSize*2);
-
-	fill(255)
-	stroke(rainColor);
-
-	strokeWeight(1);
-	ellipse(halfX,tbvr,rainSize/1.5,(rainSize*2)/1.5);
-
-	//=========================================================================
 }
+
+
+
+function draw_one_frame() {
+    background(0);
+    push();
+    scale(canvasWidth/960);
+    imageMode(CENTER);
+
+
+    // 计算每个矩形的高度
+    var rectHeight = height / 5;
+
+    // 绘制四个矩形
+    for (var i = 0; i < 5; i++) {
+        // 根据奇偶行设置颜色
+        if (i % 2 === 0) {
+            fill(31, 31, 181); // 偶数行为红色
+        } else {
+            fill(33, 64, 221); // 奇数行为绿色
+        }
+        rect(0, i * rectHeight, width, rectHeight);
+    }
+
+
+    for (let i = 0; i < customImgs.length; i++) {
+        customImgs[i].update();
+        customImgs[i].display();
+    }
+
+
+    noStroke(); // 不绘制边框
+    fill(204, 204, 204);
+    // 绘制五个长方形
+    for (let i = 0; i < numRectangles; i++) {
+        let x = xPositions[i]; // 获取当前长方形的x坐标
+        let y = startY; // 设置当前长方形的y坐标
+        rect(x, y, rectangleWidth, rectangleHeight); // 绘制长方形
+        // 更新长方形的x坐标，使其向右移动
+        x += speed;
+        // 如果长方形移出了屏幕，将其移到屏幕左侧
+        if (x > width) {
+            x = startX - rectangleWidth; // 将长方形移到屏幕左侧
+        }
+        xPositions[i] = x; // 更新长方形的位置
+    }
+
+    push();
+    translate(0, 220);
+    // 绘制五个长方形
+    for (let i = 0; i < numRectangles; i++) {
+        let x = xPositions[i]; // 获取当前长方形的x坐标
+        let y = startY; // 设置当前长方形的y坐标
+        rect(x, y, rectangleWidth, rectangleHeight); // 绘制长方形
+        // 更新长方形的x坐标，使其向右移动
+        x += speed;
+        // 如果长方形移出了屏幕，将其移到屏幕左侧
+        if (x > width) {
+            x = startX - rectangleWidth; // 将长方形移到屏幕左侧
+        }
+        xPositions[i] = x; // 更新长方形的位置
+    }
+    pop();
+
+    pop();
+
+}
+
+
+class CustomImage {
+    constructor(x, y, width, height, isRotate, isScale) {
+        this.img = img;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.angle = 0;
+        this.scale = 1;
+        this.rotateSpeed = 1;
+        this.zoomSpeed = 0.1;
+        this.isRotate = isRotate;
+        this.isScale = isScale;
+    }
+
+    display() {
+        push();
+        translate(this.x, this.y);
+        rotate(this.angle);
+        scale(this.scale);
+        imageMode(CENTER);
+        image(this.img, 0, 0, this.width, this.height);
+        pop();
+    }
+
+    update() {
+        if (this.isRotate) {
+            this.angle += this.rotateSpeed;
+        }
+        if (this.isScale) {
+            this.scale += this.zoomSpeed;
+
+            // 控制放大缩小来回切换
+            if (this.scale > 1.2 || this.scale < 0.8) {
+                this.zoomSpeed *= -1;
+            }
+        }
+
+
+    }
+}
+
