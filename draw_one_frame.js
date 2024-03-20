@@ -24,8 +24,10 @@ function preload() {
     startX = (960 - totalWidth) / 2;
     startY = 150;
 
+
+
     for (let i = 0; i < numRectangles; i++) {
-        xPositions.push(startX + i * (rectangleWidth + gap));
+        xPositions.push(map(i, 0, numRectangles - 1, startX, startX + totalWidth - rectangleWidth));
     }
 
     for (let i = 0; i <5 ; i++) {
@@ -47,17 +49,19 @@ function preload() {
 
 }
 
+let cur_frac;
 
+function draw_one_frame(cur_frac) {
 
-function draw_one_frame() {
-    background(0);
-    push();
-    scale(canvasWidth/960);
+    cur_frac = cur_frac;
+    cur_frac = map(cur_frac,0,1,1,5);
+    scale(float(canvasWidth) / 960.0);
+
     imageMode(CENTER);
 
 
     // 计算每个矩形的高度
-    var rectHeight = height / 5;
+    var rectHeight = 540 / 5;
 
     // 绘制四个矩形
     for (var i = 0; i < 5; i++) {
@@ -67,8 +71,9 @@ function draw_one_frame() {
         } else {
             fill(33, 64, 221); // 奇数行为绿色
         }
-        rect(0, i * rectHeight, width, rectHeight);
+        rect(0, i * rectHeight, 960, rectHeight);
     }
+    push();
 
 
     for (let i = 0; i < customImgs.length; i++) {
@@ -80,35 +85,68 @@ function draw_one_frame() {
     noStroke(); // 不绘制边框
     fill(204, 204, 204);
     // 绘制五个长方形
+    // 绘制五个长方形
     for (let i = 0; i < numRectangles; i++) {
         let x = xPositions[i]; // 获取当前长方形的x坐标
         let y = startY; // 设置当前长方形的y坐标
-        rect(x, y, rectangleWidth, rectangleHeight); // 绘制长方形
+
+
+        if((x+rectangleWidth<rectangleWidth)){
+            if(rectangleWidth+x>0){
+                rect(0,y,rectangleWidth+x,rectangleHeight)
+            }
+
+        }else{
+            if((x+rectangleWidth-960>0)) {
+
+                rect(x, y, rectangleWidth-(rectangleWidth+x-960) , rectangleHeight)
+
+            }else{
+                rect(x, y, rectangleWidth , rectangleHeight)
+            }
+        }
+
         // 更新长方形的x坐标，使其向右移动
         x += speed;
         // 如果长方形移出了屏幕，将其移到屏幕左侧
-        if (x > width) {
+        if (x > 960) {
             x = startX - rectangleWidth; // 将长方形移到屏幕左侧
         }
         xPositions[i] = x; // 更新长方形的位置
     }
 
-    push();
+
     translate(0, 220);
     // 绘制五个长方形
     for (let i = 0; i < numRectangles; i++) {
         let x = xPositions[i]; // 获取当前长方形的x坐标
         let y = startY; // 设置当前长方形的y坐标
-        rect(x, y, rectangleWidth, rectangleHeight); // 绘制长方形
+
+
+        if((x+rectangleWidth<rectangleWidth)){
+            if(rectangleWidth+x>0){
+                rect(0,y,rectangleWidth+x,rectangleHeight)
+            }
+
+        }else{
+            if((x+rectangleWidth-960>0)) {
+
+                    rect(x, y, rectangleWidth-(rectangleWidth+x-960) , rectangleHeight)
+
+            }else{
+                rect(x, y, rectangleWidth , rectangleHeight)
+            }
+        }
+
         // 更新长方形的x坐标，使其向右移动
         x += speed;
         // 如果长方形移出了屏幕，将其移到屏幕左侧
-        if (x > width) {
+        if (x > 960) {
             x = startX - rectangleWidth; // 将长方形移到屏幕左侧
         }
         xPositions[i] = x; // 更新长方形的位置
     }
-    pop();
+
 
     pop();
 
@@ -142,10 +180,20 @@ class CustomImage {
 
     update() {
         if (this.isRotate) {
-            this.angle += this.rotateSpeed;
+            if(cur_frac!=undefined){
+                this.angle += cur_frac;
+            }else{
+                this.angle += this.rotateSpeed;
+            }
+
         }
         if (this.isScale) {
-            this.scale += this.zoomSpeed;
+            if(cur_frac!=undefined){
+                this.scale += this.zoomSpeed*cur_frac;
+            }else{
+                this.scale += this.zoomSpeed;
+            }
+
 
             // 控制放大缩小来回切换
             if (this.scale > 1.2 || this.scale < 0.8) {
