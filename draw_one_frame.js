@@ -1,16 +1,16 @@
 let img;
 
-let rectangleWidth = 150; // 长方形宽度
-let rectangleHeight = 20; // 长方形高度
-let gap = 100; // 间隔
-let numRectangles = 5; // 长方形数量
+let rectangleWidth = 150; 
+let rectangleHeight = 20; 
+let gap = 100; 
+let numRectangles = 5; 
 
-let totalWidth = (rectangleWidth + gap) * numRectangles - gap; // 计算总宽度
-let startX; // 长方形的起始x坐标
-let startY; // 长方形的起始y坐标
+let totalWidth = (rectangleWidth + gap) * numRectangles - gap; // overall width
+let startX; // The starting x coordinate of the rectangle
+let startY; // The starting y coordinate of the rectangle
 
-let speed = 2; // 移动速度
-let xPositions = []; // 保存长方形的x坐标
+let speed = 1; 
+let xPositions = []; // Save the x-coordinate of the rectangle
 
 let customImgs = [];
 
@@ -20,7 +20,7 @@ let statX =70
 function preload() {
     img = loadImage("./star.png");
 
-    // 初始化长方形的x坐标
+   
     startX = (960 - totalWidth) / 2;
     startY = 150;
 
@@ -31,18 +31,18 @@ function preload() {
     }
 
     for (let i = 0; i <5 ; i++) {
-        customImgs.push(new CustomImage(statX, 50, 50, 50, true, false)); // 静止图片
+        customImgs.push(new CustomImage(statX, 50, 50, 50, true, false)); 
         statX+=200;
     }
     statX=70;
     for (let i = 0; i <5 ; i++) {
-        customImgs.push(new CustomImage(statX, 480, 50, 50, true, false)); // 静止图片
+        customImgs.push(new CustomImage(statX, 480, 50, 50, true, false)); 
         statX+=200;
     }
 
     statX=70;
     for (let i = 0; i <5 ; i++) {
-        customImgs.push(new CustomImage(statX, 260, 50, 50, false, true)); // 静止图片
+        customImgs.push(new CustomImage(statX, 260, 50, 50, false, true)); 
         statX+=200;
     }
 
@@ -60,16 +60,16 @@ function draw_one_frame(cur_frac) {
     imageMode(CENTER);
 
 
-    // 计算每个矩形的高度
+    // Calculate the height of each rectangle
     var rectHeight = 540 / 5;
 
-    // 绘制四个矩形
+    // draw sky
     for (var i = 0; i < 5; i++) {
-        // 根据奇偶行设置颜色
+      
         if (i % 2 === 0) {
-            fill(31, 31, 181); // 偶数行为红色
+            fill(31, 31, 181); 
         } else {
-            fill(33, 64, 221); // 奇数行为绿色
+            fill(33, 64, 221); 
         }
         rect(0, i * rectHeight, 960, rectHeight);
     }
@@ -82,13 +82,12 @@ function draw_one_frame(cur_frac) {
     }
 
 
-    noStroke(); // 不绘制边框
+    noStroke(); 
     fill(204, 204, 204);
-    // 绘制五个长方形
-    // 绘制五个长方形
+    // Draw five rectangles
     for (let i = 0; i < numRectangles; i++) {
-        let x = xPositions[i]; // 获取当前长方形的x坐标
-        let y = startY; // 设置当前长方形的y坐标
+        let x = xPositions[i]; 
+        let y = startY; 
 
 
         if((x+rectangleWidth<rectangleWidth)){
@@ -106,21 +105,21 @@ function draw_one_frame(cur_frac) {
             }
         }
 
-        // 更新长方形的x坐标，使其向右移动
+        // Update the x-coordinate of the rectangle so that it moves to the right
         x += speed;
-        // 如果长方形移出了屏幕，将其移到屏幕左侧
+        // // If the rectangle moves out of the canvas, move it to the left side of the canvas
         if (x > 960) {
-            x = startX - rectangleWidth; // 将长方形移到屏幕左侧
+            x = startX - rectangleWidth; 
         }
-        xPositions[i] = x; // 更新长方形的位置
+        xPositions[i] = x; 
     }
 
 
     translate(0, 220);
-    // 绘制五个长方形
+    // Draw five rectangles
     for (let i = 0; i < numRectangles; i++) {
-        let x = xPositions[i]; // 获取当前长方形的x坐标
-        let y = startY; // 设置当前长方形的y坐标
+        let x = xPositions[i]; 
+        let y = startY; 
 
 
         if((x+rectangleWidth<rectangleWidth)){
@@ -138,13 +137,13 @@ function draw_one_frame(cur_frac) {
             }
         }
 
-        // 更新长方形的x坐标，使其向右移动
+        // Update the x-coordinate of the rectangle so that it moves to the right
         x += speed;
-        // 如果长方形移出了屏幕，将其移到屏幕左侧
+        // If the rectangle moves out of the canvas, move it to the left side of the canvas
         if (x > 960) {
-            x = startX - rectangleWidth; // 将长方形移到屏幕左侧
+            x = startX - rectangleWidth; 
         }
-        xPositions[i] = x; // 更新长方形的位置
+        xPositions[i] = x; 
     }
 
 
@@ -195,7 +194,6 @@ class CustomImage {
             }
 
 
-            // 控制放大缩小来回切换
             if (this.scale > 1.2 || this.scale < 0.8) {
                 this.zoomSpeed *= -1;
             }
